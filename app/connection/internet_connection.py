@@ -8,6 +8,8 @@ import speedtest
 from tqdm import tqdm
 
 
+from app.style.magnify import emoticon
+
 
 
 arrow_up, arrow_down, emoji_ok, emoji_login, emoji_loading = emoticon()

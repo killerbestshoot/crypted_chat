@@ -1,7 +1,7 @@
 import subprocess
 
-import connection.internet_connection
-import connection.default_ftp_server_connection
+import app.connection.internet_connection
+import app.connection.default_ftp_server_connection
 
 
 if __name__ == "__main__":
