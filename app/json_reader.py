@@ -2,38 +2,36 @@ import csv
 import json
 import os
 
+home_directory = os.getenv("HOME")  # Recupere le repertoire personnel de l utilisateur
+desktop_path = os.path.join(home_directory, "Desktop/settings.json")  # Concatene avec le repertoire du bureau
 
 def save_settings_to_json(settings):
     try:
-        settings_path = "/home/bastien/Desktop/settings.json"
-
-        if os.path.exists(settings_path):
-            with open(settings_path, "r") as json_file:
+        if os.path.exists(desktop_path):
+            with open(desktop_path, "r") as json_file:
                 existing_settings = json.load(json_file)
                 existing_settings.update(settings)
                 settings = existing_settings
 
-        with open(settings_path, "w") as json_file:
+        with open(desktop_path, "w") as json_file:
             json.dump(settings, json_file)
-            print(f"Settings saved to {settings_path}")
+            print(f"Settings saved to {desktop_path}")
     except Exception as e:
         print(f"Error while saving settings: {e}")
 
 
-import json
 
 def load_settings_from_json():
 
     try:
         settings = {}
-        settings_path = "/home/bastien/Desktop/settings.json"
-        if os.path.exists(settings_path):
-            with open(settings_path, 'r') as file:
+        if os.path.exists(desktop_path):
+            with open(desktop_path, 'r') as file:
                 # Vérifie si le fichier est vide ou non avant de le charger
-                if os.stat(settings_path).st_size != 0:
+                if os.stat(desktop_path).st_size != 0:
                     settings = json.load(file)
         else:
-            with open(settings_path, 'w') as file:
+            with open(desktop_path, 'w') as file:
                 json.dump(settings, file)
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"Error loading settings: {e}")
@@ -45,7 +43,7 @@ def load_settings_from_json():
 
 
 def initiate_msg_log():
-    messages_path = "/datas/messages.csv"
+    messages_path = "./datas/messages.csv"
 
     # Extraction du repertoire depuis le chemin du fichier
     directory = os.path.dirname(messages_path)
@@ -63,9 +61,8 @@ def initiate_msg_log():
 
         return True
 
-
 def log():
-    log_path = "/datas/log.csv"
+    log_path = "./datas/log.csv"
 
     # Extraction du repertoire depuis le chemin du fichier
     directory = os.path.dirname(log_path)

@@ -143,10 +143,11 @@ def init():
                                     writer = csv.writer(file)
                                     writer.writerow([username, hashed_password])
                                     print(f"{Fore.GREEN}Sign up successful{Style.RESET_ALL}")
+                                    time.sleep(1.5)
                                     menu()
 
                     else:
-                        # Si le fichier n'existe pas, créez-le et ajoutez le nouvel utilisateur
+                        # Si le fichier n existe pas, creez-le et ajoutez le nouvel utilisateur
                         with open(csv_file_path, "w", newline="") as file:
                             writer = csv.writer(file)
                             writer.writerow(["Username", "Hashed_Password"])  # En-tête du fichier CSV
@@ -154,7 +155,7 @@ def init():
                             print(f"{Fore.GREEN}Sign up successful{Style.RESET_ALL}")
                             time.sleep(1)
                             menu()
-                            # Effectuez ici l'action de votre menu
+                            # Effectuez ici l action de votre menu
 
                 except IOError as e:
                     print(f"An error occurred: {e}")
