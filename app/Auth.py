@@ -77,12 +77,7 @@ def init():
                     ftp.login(ftp_username, ftp_password)
 
                     remote_csv_path = "datas/users/users.csv"
-                    # file_name = os.path.basename(remote_csv_path)
-                    # Obtention de la liste des fichiers sur le serveur FTP
-                    # ftp.cwd('/datas/users')
-                    # file_list = ftp.nlst()
 
-                    # if remote_csv_path in file_list:
                         # Telechargement du fichier CSV du serveur FTP
                     with io.BytesIO() as file:
                         ftp.retrbinary(f"RETR {remote_csv_path}", file.write)
@@ -102,8 +97,6 @@ def init():
                                 else:
                                     print("Username or Password incorrect")
                                     return login()
-                    # else:
-                    #     print("File users.csv does not exist on the FTP server.")
                 except ftplib.all_errors as e:
                     print(f"Failed to connect to FTP: {e}")
                     menu()
@@ -176,14 +169,16 @@ def init():
                     ftp.login(ftp_username, ftp_password)
 
                     remote_csv_path = "datas/users/users.csv"
+                    start_path = "datas/users"
 
-                    file_list = ftp.nlst()
+                    file_list = ftp.nlst(start_path)
 
-                    if remote_csv_path not in file_list:
+                    if "users.csv" not in file_list:
                         initial_content = "username,password_hash\n"
                         with io.BytesIO(initial_content.encode('utf-8')) as file:
                             ftp.storbinary(f"STOR {remote_csv_path}", file)
                         print("users.csv created on the FTP server.")
+                        print(file_list)
                         time.sleep(2)
 
                     user_exists = check_existing_user(ftp, remote_csv_path, username)
