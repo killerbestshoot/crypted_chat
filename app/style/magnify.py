@@ -14,7 +14,10 @@ def emoticon():
 
 
 def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')  # Clear the screen
+    if os.name == 'nt':
+        os.system('cls')  # Effacer l'écran sur Windows
+    else:
+        os.system('clear')  # Clear the screen
 
 
 def PrintLetter(message):

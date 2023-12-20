@@ -8,7 +8,9 @@ import speedtest
 from tqdm import tqdm
 
 
-from app.style.magnify import emoticon
+from app.style.magnify import emoticon, clear_screen
+from app.Auth import  init
+# from app.app_home import init_home()
 
 
 
@@ -16,6 +18,8 @@ arrow_up, arrow_down, emoji_ok, emoji_login, emoji_loading = emoticon()
 
 if sys.stdout.encoding != 'utf-8':
     sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf-8', buffering=1)
+
+
 def simulate_loading():
     try:
 
@@ -52,16 +56,20 @@ def connect_and_measure_speed():
         if download_speed is not None and upload_speed is not None:
             print(
                 f"Your network connection speed: {download_speed:.2f} Mbps {arrow_up} | {upload_speed:.2f} Mbps {arrow_down}")
+            time.sleep(3.55)
+            clear_screen()
+            init()
         else:
             print("Unable to measure speed.")
+            time.sleep(2)
+            init()
     else:
         print("Connection failed. Please check your internet connection.")
         time.sleep(2)
         sys.exit()
-    time.sleep(3.55)
-    # clear_screen()
-    # init()
+
 
 
 connect_and_measure_speed()
+
 # print(os.listdir('../style'))
