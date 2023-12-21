@@ -1,4 +1,3 @@
-import json
 import os
 import subprocess
 import sys
@@ -10,17 +9,18 @@ from colorama import Fore, Style
 import app.json_reader as jr
 
 
-# def create_users_file(directory):
-#     users_path = os.path.join(directory, "users.csv")
-#     with open(users_path, "w"):
-#         pass
-#
-#
-# def create_messages_file(directory):
-#     messages_path = os.path.join(directory, "messages.csv")
-#     with open(messages_path, "w"):
-#         pass
-#
+def create_users_file(directory):
+    users_path = os.path.join(directory, "users.csv")
+    with open(users_path, "w"):
+        pass
+
+
+def create_messages_file(directory):
+    messages_path = os.path.join(directory, "messages.csv")
+    with open(messages_path, "w"):
+        pass
+
+
 #
 # def update_or_create_settings(directory):
 #     settings_file = "settings.json"
@@ -38,24 +38,31 @@ import app.json_reader as jr
 #         print("Settings updated in settings.json")
 #
 #
-# def default_directory_choice():
-#     try:
-#         root_directory = "C:"  # Chemin racine
-#         if not os.path.exists(root_directory):
-#             os.makedirs(root_directory)
-#
-#         os.chdir(root_directory)
-#         create_users_file(root_directory)
-#         create_messages_file(root_directory)
-#         print(f"Files will be saved locally in: {root_directory}")
-#
-#         # Enregistrement du parametre dans un fichier JSON
-#         update_or_create_settings(root_directory)
-#
-#     except FileNotFoundError:
-#         print("The specified directory path is invalid.")
-#     except Exception as e:
-#         print(f"An error occurred: {e}")
+def default_directory_choice():
+
+    try:
+        home_directory = os.getenv("HOME")  # Recupere le repertoire personnel de l utilisateur
+        desktop_path = os.path.join(home_directory, "Desktop/User_data")  # Concatene avec le repertoire du bureau
+
+        # desktop_path = ""  # Chemin racine
+        if not os.path.exists(desktop_path):
+            os.makedirs(desktop_path)
+
+        os.chdir(desktop_path)
+        create_users_file(desktop_path)
+        create_messages_file(desktop_path)
+        print(f"Files will be saved locally in: {desktop_path}")
+
+        # Enregistrement du parametre dans un fichier JSON
+        settings = {"default_directory": desktop_path}
+        if jr.save_settings_to_json(settings):
+            print(f"you choose the default config : {desktop_path}")
+            return
+
+    except FileNotFoundError:
+        print("The specified directory path is invalid.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 
 def local_directory_choice():  # sourcery skip: extract-method
@@ -107,7 +114,8 @@ def remote_directory_choice():
                 print(f"{Fore.BLUE}Connected to FTP server: {ftp_server}{Style.RESET_ALL}")
 
                 # Si la connexion reussit, enregistrez les parametres dans un fichier JSON
-                settings = {"ftp_server": ftp_server, "ftp_port": ftp_port, "ftp_username": ftp_username, "ftp_password": ftp_password}
+                settings = {"ftp_server": ftp_server, "ftp_port": ftp_port, "ftp_username": ftp_username,
+                            "ftp_password": ftp_password}
                 if jr.initiate_msg_log() and jr.log():
                     jr.save_settings_to_json(settings)
             else:
@@ -119,7 +127,7 @@ def remote_directory_choice():
                 if continue_option.upper() == "N":
                     return  # Retour au menu principal
                 elif continue_option.upper() == "Y":
-                    break  # Reexecute remote_directory_choice
+                    break  # Re-execute remote_directory_choice
                 else:
                     print("Invalid choice. Please enter Y or N.")
         except Exception as e:
@@ -145,9 +153,16 @@ def main_menu():
             remote_directory_choice()
         elif choice == "3":
             print("You choose use the default settings ")
-            # default_directory_choice()
+            default_directory_choice()
         elif choice == "4":
-            subprocess.run(["python", "app/connection/Internet_connection.py"])
+            from app.connection.Internet_connection import connect_and_measure_speed
+            if saved_settings := jr.load_settings_from_json():
+                connect_and_measure_speed()
+                break
+            else:
+                print("No settings were found...")
+                time.sleep(2)
+                main_menu()
         elif choice == "405":
             print("You do not have permission to enter this section if you have it")
             attempts = 0
@@ -167,9 +182,10 @@ def main_menu():
         else:
             print("Invalid choice. Please enter 1,2 or 3 (0) to stop the program.")
 
+
 if saved_settings := jr.load_settings_from_json():
-        # print("Loaded settings:", saved_settings)
-        # time.sleep(3)
+    # print("Loaded settings:", saved_settings)
+    # time.sleep(3)
     subprocess.run(["python", "app/connection/Internet_connection.py"])
 else:
     print("No settings found. Proceed to main menu.")

@@ -7,14 +7,13 @@ import time
 import speedtest
 from tqdm import tqdm
 
-
 from app.style.magnify import emoticon, clear_screen
-from app.Auth import  init
+from app.Auth import init
+
 # from app.app_home import init_home()
 
 
-
-arrow_up, arrow_down, emoji_ok, emoji_login, emoji_loading = emoticon()
+arrow_up, arrow_down, emoji_ok, emoji_login, emoji_loading, asterisk, hash_symbol, check_mark, heart, speedometer, danger = emoticon()
 
 if sys.stdout.encoding != 'utf-8':
     sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf-8', buffering=1)
@@ -62,12 +61,12 @@ def connect_and_measure_speed():
         else:
             print("Unable to measure speed.")
             time.sleep(2)
+            clear_screen()
             init()
     else:
         print("Connection failed. Please check your internet connection.")
         time.sleep(2)
         sys.exit()
-
 
 
 connect_and_measure_speed()

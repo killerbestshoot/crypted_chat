@@ -27,7 +27,7 @@ def load_settings_from_json():
         settings = {}
         if os.path.exists(desktop_path):
             with open(desktop_path, 'r') as file:
-                # Vérifie si le fichier est vide ou non avant de le charger
+                # Verifie si le fichier est vide ou non avant de le charger
                 if os.stat(desktop_path).st_size != 0:
                     settings = json.load(file)
         else:
