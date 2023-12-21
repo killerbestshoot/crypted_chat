@@ -29,22 +29,24 @@ def init():
             return username in existing_users
 
     def login():
-        settings = jr.load_settings_from_json()
+
+        settings: dict = jr.load_settings_from_json()
         # charge les paramettres du fichier json (settings.json) qui se trouvent dans le repertoire locale C:
         if settings:
             # verifie si les paremettres existent
-            default_directory = settings.get("default_directory")
-            local_directory = settings.get("local_directory")
-            ftp_server = settings.get("ftp_server")
-            ftp_port = settings.get("ftp_port")
-            ftp_username = settings.get("ftp_username")
-            ftp_password = settings.get("ftp_password")
+            default_directory: str = settings.get("default_directory")
+            local_directory: str = settings.get("local_directory")
+            ftp_server: str = settings.get("ftp_server")
+            ftp_port: int = settings.get("ftp_port")
+            ftp_username: str = settings.get("ftp_username")
+            ftp_password: str = settings.get("ftp_password")
 
             if default_directory:
+
                 # verifie d abord si les paramettres seront sauves en local
-                csv_file_path = os.path.join(default_directory, "users.csv")
-                username = input(f"Insert your Username {emoji_login} ")
-                password = getpass.getpass("Insert your password: ")
+                csv_file_path: str = os.path.join(default_directory, "users.csv")
+                username: str = input(f"Insert your Username {emoji_login} ")
+                password: str = getpass.getpass(f"Insert your password: {hash_symbol} ")
 
                 # Si le repertoire local est specifie, essayez de lire le fichier CSV localement
                 # Sinon, tentez de vous connecter au serveur FTP
@@ -58,21 +60,26 @@ def init():
                                     submitted_password_hash = hashlib.sha256(password.encode()).hexdigest()
                                     if hashed_password == submitted_password_hash:
                                         print(f"{Fore.GREEN}login successful{Style.RESET_ALL}\n")
+                                        time.sleep(3)
+                                        st.clear_screen()
+                                        st.header_page()
+                                        st.say_hello(username)
                                         print("*" * 99)
                                         init_home(username)
                                         return
                                     else:
-                                        print("Username or Password incorrect")
-                                        return login()
+                                        print(f"Username or Password incorrect {danger}")
+                                        time.sleep(2)
+                                        return menu()
                             # print("Username or Password incorrect")
                             # return login()
                     except Exception as e:
                         print(f"An error occurred : {e}")
             elif local_directory:
                 # verifie d abord si les paramettres seront sauves en local
-                csv_file_path = os.path.join(local_directory, "users.csv")
-                username = input(f"Insert your Username {emoji_login} ")
-                password = getpass.getpass("Insert your password: ")
+                csv_file_path: str = os.path.join(local_directory, "users.csv")
+                username: str = input(f"Insert your Username {emoji_login} ")
+                password: str = getpass.getpass("Insert your password: ")
 
                 # Si le repertoire local est specifie, essayez de lire le fichier CSV localement
                 # Sinon, tentez de vous connecter au serveur FTP
@@ -86,11 +93,15 @@ def init():
                                     submitted_password_hash = hashlib.sha256(password.encode()).hexdigest()
                                     if hashed_password == submitted_password_hash:
                                         print(f"{Fore.GREEN}login successful{Style.RESET_ALL}\n")
+                                        time.sleep(3)
+                                        st.clear_screen()
+                                        st.header_page()
+                                        st.say_hello(username)
                                         print("*" * 99)
                                         init_home(username)
                                         return
                                     else:
-                                        print("Username or Password incorrect")
+                                        print(f"Username or Password incorrect {danger}")
                                         return login()
                             # print("Username or Password incorrect")
                             # return login()
@@ -98,8 +109,9 @@ def init():
                     except Exception as e:
                         print(f"An error occurred: {e}")
             elif ftp_server and ftp_port:
-                username = input(f"Insert your Username {emoji_login} ")
-                password = getpass.getpass("Insert your password: ")
+
+                username: str = input(f"Insert your Username {emoji_login} ")
+                password: str = getpass.getpass(f"Insert your password: {hash_symbol} ")
                 try:
                     ftp = ftplib.FTP()
                     ftp.connect(ftp_server, int(ftp_port))
@@ -120,21 +132,29 @@ def init():
                                 submitted_password_hash = hashlib.sha256(password.encode()).hexdigest()
                                 if hashed_password == submitted_password_hash:
                                     print(f"{Fore.GREEN}login successful{Style.RESET_ALL}\n")
+                                    time.sleep(3)
+                                    st.clear_screen()
+                                    st.header_page()
+                                    st.say_hello(username)
                                     print("*" * 99)
                                     init_home(username)
                                     return
                                 else:
-                                    print("Username or Password incorrect")
-                                    return login()
+                                    print(f"Username or Password incorrect {danger}")
+                                    time.sleep(2)
+                                    return menu()
                 except ftplib.all_errors as e:
                     print(f"Failed to connect to FTP: {e}")
-                    menu()
+                    time.sleep(2)
+                    return
             else:
                 print("No local or FTP directory specified in settings.")
-                menu()
+                time.sleep(2)
+                return
         else:
             print("Settings not found.")
-            return menu()
+            time.sleep(3)
+            return
 
     def sign_up():# all the constraints has been setted up
 

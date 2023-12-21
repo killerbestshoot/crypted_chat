@@ -20,24 +20,6 @@ def create_messages_file(directory):
     with open(messages_path, "w"):
         pass
 
-
-#
-# def update_or_create_settings(directory):
-#     settings_file = "settings.json"
-#
-#     if os.path.exists(settings_file):
-#         with open(settings_file, "r") as file:
-#             settings = json.load(file)
-#     else:
-#         settings = {}
-#
-#     settings["local_directory"] = directory
-#
-#     with open(settings_file, "w") as file:
-#         json.dump(settings, file)
-#         print("Settings updated in settings.json")
-#
-#
 def default_directory_choice():
 
     try:
@@ -51,13 +33,14 @@ def default_directory_choice():
         os.chdir(desktop_path)
         create_users_file(desktop_path)
         create_messages_file(desktop_path)
-        print(f"Files will be saved locally in: {desktop_path}")
 
         # Enregistrement du parametre dans un fichier JSON
         settings = {"default_directory": desktop_path}
-        if jr.save_settings_to_json(settings):
-            print(f"you choose the default config : {desktop_path}")
-            return
+        if jr.initiate_msg_log() and jr.log():
+            if jr.save_settings_to_json(settings):
+                print(f"Files will be saved locally in: {desktop_path}")
+                time.sleep(2)
+                return
 
     except FileNotFoundError:
         print("The specified directory path is invalid.")
@@ -73,8 +56,9 @@ def local_directory_choice():  # sourcery skip: extract-method
                 os.chdir(local_directory)
 
                 settings = {"local_directory": local_directory}
-                if jr.save_settings_to_json(settings):
-                    print(f"Files will be saved locally in: {local_directory}")
+                if jr.initiate_msg_log() and jr.log():
+                    if jr.save_settings_to_json(settings):
+                        print(f"Files will be saved locally in: {local_directory}")
 
             while True:
                 continue_option = input("Do you want to try another path? (Y/N): ")
@@ -185,9 +169,8 @@ def main_menu():
 
 if saved_settings := jr.load_settings_from_json():
     # print("Loaded settings:", saved_settings)
-    # time.sleep(3)
     subprocess.run(["python", "app/connection/Internet_connection.py"])
 else:
     print("No settings found. Proceed to main menu.")
-    time.sleep(3)
+    time.sleep(2)
     main_menu()
